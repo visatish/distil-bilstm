@@ -52,7 +52,7 @@ def load_tsv(path, skip_header=True):
         data = [row for row in reader]
     return data
 
-def load_data(data_dir, tokenizer, vocab=None, batch_first=False, augmented=False, use_teacher=False):
+def load_data(data_dir, tokenizer, vocab=None, batch_first=False, augmented=False, use_teacher=False, vector_cache=".cache/"):
     text_field = data.Field(sequential=True, tokenize=tokenizer, lower=True, include_lengths=True, batch_first=batch_first)
     label_field_class = data.Field(sequential=False, use_vocab=False, dtype=torch.long)
     if augmented or use_teacher:
@@ -85,7 +85,7 @@ def load_data(data_dir, tokenizer, vocab=None, batch_first=False, augmented=Fals
 
     # Initialize field's vocabulary
     if vocab is None:
-        vectors = pretrained_aliases["fasttext.en.300d"](cache=".cache/")
+        vectors = pretrained_aliases["fasttext.en.300d"](cache=vector_cache)
         text_field.build_vocab(train_dataset, vectors=vectors)
     else:
         # Use bert tokenizer's vocab if supplied
